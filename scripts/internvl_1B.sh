@@ -4,7 +4,9 @@ PYTHONUNBUFFERED=1 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=0 python3 -m verl.tra
  data.train_batch_size=256 \
  data.max_prompt_length=512 \
  data.max_response_length=256 \
- actor_rollout_ref.model.path=OpenGVLab/InternVL2-1B \
+ data.trust_remote_code=True \
+ actor_rollout_ref.model.path=/home/caozhe/workspace/InternVL2-1B \
+ actor_rollout_ref.model.trust_remote_code=True \
  actor_rollout_ref.actor.optim.lr=1e-6 \
  actor_rollout_ref.actor.ppo_mini_batch_size=64 \
  actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4 \
@@ -13,7 +15,7 @@ PYTHONUNBUFFERED=1 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=0 python3 -m verl.tra
  actor_rollout_ref.rollout.gpu_memory_utilization=0.4 \
  actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=4 \
  critic.optim.lr=1e-5 \
- critic.model.path=OpenGVLab/InternVL2-1B \
+ critic.model.path=/home/caozhe/workspace/InternVL2-1B \
  critic.model.trust_remote_code=True    \
  critic.ppo_micro_batch_size_per_gpu=4 \
  algorithm.kl_ctrl.kl_coef=0.001 \

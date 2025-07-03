@@ -46,6 +46,7 @@ def run_ppo(config) -> None:
                     "NCCL_DEBUG": "WARN",
                     "VLLM_LOGGING_LEVEL": "WARN",
                     "VLLM_ALLOW_RUNTIME_LORA_UPDATING": "true",
+                    "RAY_DEBUG": "1",
                 }
             },
             num_cpus=config.ray_init.num_cpus,
@@ -137,7 +138,6 @@ class TaskRunner:
             raise NotImplementedError
 
         from verl.trainer.ppo.ray_trainer import ResourcePoolManager, Role
-
         # Map roles to their corresponding remote worker classes.
         role_worker_mapping = {
             Role.ActorRollout: ray.remote(actor_rollout_cls),
@@ -209,6 +209,7 @@ class TaskRunner:
             device_name=config.trainer.device,
         )
         # Initialize the workers of the trainer.
+        
         trainer.init_workers()
         # Start the training process.
         trainer.fit()

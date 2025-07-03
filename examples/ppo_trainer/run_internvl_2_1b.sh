@@ -2,7 +2,7 @@ set -x
 ENGINE=${1:-vllm}
 
 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo \
-    algorithm.adv_estimator=grpo \
+    algorithm.adv_estimator=gae \
     data.train_files=$HOME/workspace/geo3k/train.parquet \
     data.val_files=$HOME/workspace/geo3k/test.parquet \
     data.train_batch_size=256 \
@@ -11,7 +11,9 @@ HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo
     data.filter_overlong_prompts=True \
     data.truncation='error' \
     data.image_key=images \
-    actor_rollout_ref.model.path=Qwen/Qwen2.5-VL-7B-Instruct \
+    data.trust_remote_code=True \
+    actor_rollout_ref.model.path=/home/caozhe/workspace/InternVL2-1B \
+    actor_rollout_ref.model.trust_remote_code=True \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.actor.ppo_mini_batch_size=128 \
@@ -26,7 +28,6 @@ HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo
     actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=20 \
     actor_rollout_ref.rollout.tensor_model_parallel_size=2 \
     actor_rollout_ref.rollout.name=$ENGINE \
-    actor_rollout_ref.rollout.engine_kwargs.vllm.disable_mm_preprocessor_cache=True \
     actor_rollout_ref.rollout.gpu_memory_utilization=0.6 \
     actor_rollout_ref.rollout.enable_chunked_prefill=False \
     actor_rollout_ref.rollout.enforce_eager=False \
@@ -34,11 +35,18 @@ HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo
     actor_rollout_ref.rollout.n=5 \
     actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=20 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
+    critic.model.use_remove_padding=True \
+    critic.model.trust_remote_code=True    \
+    critic.model.path=/home/caozhe/workspace/InternVL2-1B  \
+    critic.model.enable_gradient_checkpointing=True \
+    critic.ppo_micro_batch_size_per_gpu=32 \
+    critic.model.fsdp_config.param_offload=False \
+    critic.model.fsdp_config.optimizer_offload=False \
     algorithm.use_kl_in_reward=False \
     trainer.critic_warmup=0 \
     trainer.logger=['console','wandb'] \
-    trainer.project_name='verl_grpo_example_geo3k' \
-    trainer.experiment_name='qwen2_5_vl_7b_function_rm' \
+    trainer.project_name='internvl' \
+    trainer.experiment_name='internvl1b_test' \
     trainer.n_gpus_per_node=4 \
     trainer.nnodes=1 \
     trainer.save_freq=20 \

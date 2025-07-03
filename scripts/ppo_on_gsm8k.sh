@@ -1,4 +1,4 @@
-PYTHONUNBUFFERED=1 PYTHONUNBUFFERED=1 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=0 python3 -m verl.trainer.main_ppo \
+PYTHONUNBUFFERED=1 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=0 python3 -m verl.trainer.main_ppo \
  data.train_files=$HOME/workspace/gsm8k/train.parquet \
  data.val_files=$HOME/workspace/gsm8k/test.parquet \
  data.train_batch_size=256 \

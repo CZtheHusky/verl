@@ -2,7 +2,7 @@ set -x
 ENGINE=${1:-vllm}
 
 HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo \
-    algorithm.adv_estimator=grpo \
+    algorithm.adv_estimator=gae \
     data.train_files=$HOME/workspace/geo3k/train.parquet \
     data.val_files=$HOME/workspace/geo3k/test.parquet \
     data.train_batch_size=256 \
@@ -34,6 +34,12 @@ HYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES=4,5,6,7 python3 -m verl.trainer.main_ppo
     actor_rollout_ref.rollout.n=5 \
     actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=20 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
+    critic.model.use_remove_padding=True \
+    critic.model.path=Qwen/Qwen2.5-VL-7B-Instruct  \
+    critic.model.enable_gradient_checkpointing=True \
+    critic.ppo_micro_batch_size_per_gpu=32 \
+    critic.model.fsdp_config.param_offload=False \
+    critic.model.fsdp_config.optimizer_offload=False \
     algorithm.use_kl_in_reward=False \
     trainer.critic_warmup=0 \
     trainer.logger=['console','wandb'] \
